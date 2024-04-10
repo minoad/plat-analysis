@@ -1,0 +1,71 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "plat-analysis"
+version = "0.1.0"
+description = "Lovely Spam! Wonderful Spam!"
+requires-python = ">=3.12"
+license = { file = "LICENSE.txt" }
+keywords = ["plat", "template", "devcontainer"]
+authors = [{ name = "Micah Norman", email = "minoad@gmail.com" }]
+maintainers = [{ name = "Micah Norman", email = "minoad@gmail.com" }]
+dependencies = ["httpx", "pathlib", "click", "boto3"]
+
+[project.optional-dependencies]
+dev = [
+    "pylint",
+    "toml",
+    "yapf",
+    "colorama",
+    "isort",
+    "black",
+    "mypy",
+    "mypy-extensions",
+]
+test = ["pytest < 5.0.0", "pytest-cov[all]"]
+all = ["devcont[test, dev]"]
+
+[project.urls]
+homepage = "https://example.com"
+documentation = "https://readthedocs.org"
+repository = "https://github.com/minoad/plat-analysis"
+changelog = "https://github.com/minoad/plat-analysis/CHANGELOG.md"
+
+[tool.mypy]
+warn_unreachable = true
+show_error_codes = true
+show_column_numbers = true
+
+[tool.pytest.ini_options]
+# Option below requires `tests/optional.py`
+addopts = "--strict-config --strict-markers"
+
+[tool.isort]
+profile = "black"
+
+[tool.black]
+line-length = 88
+target-version = ['py312']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # The following are specific to Black, you probably don't want those.
+  tests/data
+  | profiling
+)/
+'''
+# We use preview style for formatting Black itself. If you
+# want stable formatting across releases, you should keep
+# this off.
+preview = true
+
+[project.scripts]
+testo = "testo.__main__:main"
+
+#[project.gui-scripts]
+#spam-gui = "testo.printo:main"
+
+#[project.entry-points."spam.magical"]
+#tomatoes = "spam:main_tomatoes"
