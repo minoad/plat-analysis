@@ -11,18 +11,30 @@ license = { file = "LICENSE.txt" }
 keywords = ["plat", "template", "devcontainer"]
 authors = [{ name = "Micah Norman", email = "minoad@gmail.com" }]
 maintainers = [{ name = "Micah Norman", email = "minoad@gmail.com" }]
-dependencies = ["httpx", "pathlib", "click", "boto3"]
+dependencies = [
+  "httpx",
+  "pathlib",
+  "click",
+  "boto3",
+  "pytesseract",
+  "pdf2image",
+  "python-poppler",
+  "pypdf",
+  "isort",
+  "black",
+  "mypy",
+]
 
 [project.optional-dependencies]
 dev = [
-    "pylint",
-    "toml",
-    "yapf",
-    "colorama",
-    "isort",
-    "black",
-    "mypy",
-    "mypy-extensions",
+  "pylint",
+  "toml",
+  "yapf",
+  "colorama",
+  "isort",
+  "black",
+  "mypy",
+  "mypy-extensions",
 ]
 test = ["pytest < 5.0.0", "pytest-cov[all]"]
 all = ["devcont[test, dev]"]

@@ -7,8 +7,9 @@ WORKDIR /code
 # copy the dependencies file to the working directory
 #COPY requirements.txt .
 
-# install dependencies
-#RUN pip install -r requirements.txt
+RUN apt update
+RUN apt install -y tesseract-ocr libtesseract-dev libpoppler-cpp-dev poppler-utils
+RUN pip install -e .
 
 # copy the content of the local src directory to the working directory
 #COPY src/ .
