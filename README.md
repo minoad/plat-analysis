@@ -23,4 +23,5 @@ pip install -e .
 # Install pytesseract
 # windows https://digi.bib.uni-mannheim.de/tesseract/tesseract-ocr-w64-setup-5.3.3.20231005.exe
 # ubuntu 
+black -t py312 -l 120 .
 ```

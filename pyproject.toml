@@ -23,6 +23,8 @@ dependencies = [
   "isort",
   "black",
   "mypy",
+  "pylint",
+  "flake8"
 ]
 
 [project.optional-dependencies]
@@ -58,20 +60,19 @@ addopts = "--strict-config --strict-markers"
 profile = "black"
 
 [tool.black]
-line-length = 88
+line-length = 120
 target-version = ['py312']
 include = '\.pyi?$'
-extend-exclude = '''
-/(
-  # The following are specific to Black, you probably don't want those.
-  tests/data
-  | profiling
-)/
-'''
 # We use preview style for formatting Black itself. If you
 # want stable formatting across releases, you should keep
 # this off.
 preview = true
+
+[tool.pylint.format]
+max-line-length = "120"
+
+[tool.pylint.'MESSAGES CONTROL']
+max-line-length = 120
 
 [project.scripts]
 testo = "testo.__main__:main"

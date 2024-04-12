@@ -11,9 +11,16 @@
 				"ms-python.python",
 				"ms-python.isort",
 				"mikoz.black-py",
+				"ms-python.autopep8",
+				"gruntfuggly.todo-tree",
+				"ms-python.pylint",
+				"ms-python.flake8",
+				"donjayamanne.python-extension-pack",
+				"ms-python.mypy-type-checker",
+				"ms-vscode.makefile-tools"
 			]
 		}
-	},
+	}
 	// "forwardPorts": [
 	// 	3000
 	// ]
