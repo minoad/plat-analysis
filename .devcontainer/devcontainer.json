@@ -19,7 +19,8 @@
 				"ms-python.mypy-type-checker",
 				"ms-vscode.makefile-tools",
 				"analytic-signal.preview-tiff",
-				"jebbs.plantuml"
+				"jebbs.plantuml",
+				"ms-vscode.makefile-tools"
 			]
 		}
 	}
