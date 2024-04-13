@@ -2,11 +2,14 @@
 
 ## TODO
 
-* TODO: Deal with these file names
-* TODO: Automate file type
-* TODO: Come back to this and figure out what is going on
-    * struct errors in ocr.py
-* TODO: Can i remove watermarks?
+> TODO: Deal with these file names
+> TODO: Automate file type
+> TODO: Come back to this and figure out what is going on
+    > struct errors in ocr.py
+> TODO: Can i remove watermarks?
+> TODO: Convert the file write to use a protocol and implement a sqlwriter
+> TODO: Resolve `WARNING:plat.ocr:Not implemented error on pages in pdf plat/data/GRAND MESA/Grand Mesa 7 Lots 83 and 84 Replat Addressing 2019-07-30 (2).pdf: unsupported filter /JBIG2Decode. File path: plat/data/GRAND MESA/Grand Mesa 7 Lots 83 and 84 Replat Addressing 2019-07-30 (2).pdf`
+> TODO: Collect additional pdf file properties.
 
 ## Introduction
 
@@ -21,15 +24,5 @@ Given a set of pdf's of plats
 ## Setup
 
 ```shell
-# TODO: Move this to .devcontainer
-## If needed: sudo vi /etc/apt/sources.list
-## deb http://archive.ubuntu.com/ubuntu bionic universe
-apt update
-apt install -y tesseract-ocr libtesseract-dev libpoppler-cpp-dev poppler-utils
-pip install -e .
-
-# Install pytesseract
-# windows https://digi.bib.uni-mannheim.de/tesseract/tesseract-ocr-w64-setup-5.3.3.20231005.exe
-# ubuntu 
-black -t py312 -l 120 .
+make build
 ```

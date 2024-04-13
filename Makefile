@@ -2,29 +2,29 @@
 build:
 	pip install -e .
 
-.PHONY: typehint
-typehint:
+.PHONY: mypy
+mypy:
 	mypy --ignore-missing-imports plat/
 
 .PHONY: test
 test:
 	pytest test/
 
-.PHONY: test-coverage
-test-coverage:  ## Run tests with coverage
+.PHONY: coverage
+coverage:  ## Run tests with coverage
 	coverage erase
 	coverage run -m pytest
 	coverage report -m
 
 .PHONY: lint
-lint: lint_pylint lint_flake8 black typehint
+lint: pylint flake8 black mypy
 
-.PHONY: lint_pylint
-lint_pylint:
+.PHONY: pylint
+pylint:
 	pylint --max-line-length=120 plat/
 
-.PHONY: lint_flake8
-lint_flake8:
+.PHONY: flake8
+flake8:
 	flake8 --max-line-length=120 --ignore=E266,E402,F841,F401,E302,E305 .
 
 .PHONY: checklist

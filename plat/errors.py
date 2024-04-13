@@ -1,3 +1,24 @@
+"""
+This module defines custom exception classes for handling errors in the plat project.
+
+It includes the following exception classes:
+
+- OCRError: Raised when there's an error during Optical Character Recognition (OCR) processing.
+    It includes the file path in the error message.
+
+- PDFPageError: Raised when a PDF file has no pages. It includes the file path in the error message.
+
+- PlatPageImageError: Raised when there's an error related to an image in a plat page.
+    It includes the image data type and image path in the error message.
+
+- PlatFileTypeError: Raised when there's an error related to the file type of a plat.
+    It includes the file path in the error message.
+
+Each exception class inherits from the built-in Exception class and adds additional context
+to the error message, such as the file path or image data type.
+"""
+
+
 class OCRError(Exception):
     """
     Generic OCR Error

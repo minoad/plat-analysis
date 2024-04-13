@@ -18,8 +18,8 @@ OCR_OUTPUT_PATH: str = "plat/data/ocr_output/"
 
 # TODO: In test_small ensure one type of all errors.
 # PLAT_DIR: str = "plat/data/plats_notes_sharepoint"
-PLAT_DIR: str = "plat/data/bluffs"
-# PLAT_DIR: str = "plat/data/grand_mesa"
+# PLAT_DIR: str = "plat/data/bluffs"
+PLAT_DIR: str = "plat/data/GRAND MESA"
 # PLAT_DIR: str = "plat/data/HIGHLANDS/Highlands 3"
 # PLAT_DIR: str = "plat/data/CAP ROCK"
 # PLAT_DIR: str = "plat/data/test_small"
@@ -52,8 +52,9 @@ def main() -> int:
     for plat_dir in plat_base_directory.iterdir():
         if plat_dir.is_file():
             plat_files.append(plat_dir)
-    plat_results: list[PlatDocument] = [PlatDocument(
-        location=plat, ocr_output_path=OCR_OUTPUT_PATH) for plat in plat_files]
+    plat_results: list[PlatDocument] = [
+        PlatDocument(location=plat, ocr_output_path=OCR_OUTPUT_PATH) for plat in plat_files
+    ]
     print(len(plat_results))
 
     return 0

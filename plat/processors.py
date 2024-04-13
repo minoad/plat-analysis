@@ -37,14 +37,15 @@ This module is part of the plat project, which is used for processing plat docum
 
 import io
 import logging
+import struct
 from pathlib import Path
 from typing import Protocol
 
-import pytesseract
-from PIL import Image
-from pypdf import PageObject, PdfReader
-from pypdf._utils import ImageFile
-import struct
+import pytesseract  # pylint: disable=import-error
+from PIL import Image  # pylint: disable=import-error
+from pypdf import PageObject, PdfReader  # pylint: disable=import-error
+from pypdf._utils import ImageFile  # pylint: disable=import-error
+
 from plat.errors import PDFPageError
 
 
@@ -85,7 +86,6 @@ class PDFProcessor(DocumentProcessor):
         Get image from self.image_data.data
         """
         ocr_text: list[str] = []
-        # ocr_text: list[str] = [self.ocr(image) for image in page.images]
         try:
             for image in page.images:
                 ocr_text.append(self.ocr(image))

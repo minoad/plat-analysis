@@ -1,7 +1,22 @@
+"""
+This module contains tests for the PDFProcessor class from the plat.processors module.
+
+It includes the following tests:
+
+- test_pdf_processor: This test function creates an instance of the PDFProcessor class,
+    processes a test PDF file, and checks if the result is a list of strings.
+
+The tests in this module use the pytest framework. Logging is configured to write messages
+to a file named 'pytest_processor.log' with a level of INFO.
+
+Test files are defined in the TEST_FILES list. Currently, it includes one test file located
+at 'plat/data/test_small/201100030.pdf'.
+"""
+
 import logging
 from pathlib import Path
 
-import pytest
+import pytest  # type: ignore
 
 from plat.processors import PDFProcessor
 
