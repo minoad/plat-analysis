@@ -2,6 +2,12 @@
 build:
 	pip install -e .
 
+.PHONY: docker_clean
+docker_clean:
+	docker image prune --all -f
+	docker container prune -f
+	docker-compose down --rmi all --volumes --remove-orphans
+
 .PHONY: mypy
 mypy:
 	mypy --ignore-missing-imports plat/
