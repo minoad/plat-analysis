@@ -8,7 +8,7 @@ WORKDIR /code
 #COPY requirements.txt .
 
 RUN apt update
-RUN apt install -y tesseract-ocr libtesseract-dev libpoppler-cpp-dev poppler-utils
+RUN apt install -y tesseract-ocr libtesseract-dev libpoppler-cpp-dev poppler-utils ffmpeg libsm6 libxext6
 # RUN pip install -e .
 
 # copy the content of the local src directory to the working directory

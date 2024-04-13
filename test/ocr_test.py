@@ -1,38 +1,24 @@
 from pathlib import Path
 
-# from pytest_mock import mocker
-
 import pytest
 
-from plat.ocr import PlatPage, PlatDocument  # replace with your actual module
+from plat.ocr import PDFProcessor, PlatDocument, PlatFileTypeError
+
+TEST_FILES = ["plat/data/test_small/201100030.pdf"]
 
 
-def test_image_path(mocker):
-    # Arrange
-    mocker.patch("plat.ocr.PlatPage.image_directory", new=Path("/test/directory"))
-    mocker.patch("plat.ocr.PlatPage.image_data", new=["test_image.jpg"])
-    ocr_instance = PlatPage(
-        file=Path("plat/data/grand_mesa/GM 5 Lot 170.pdf"),
-        page_num=0,
-        image_data="",
-        image_directory=Path("/test/directory"),
-    )
+def test_process_file():
+    # Setup
+    test_file = Path(TEST_FILES[0])  # replace with path to a test PDF file
+    ocr_output_path = "test/test_output"  # replace with path to output directory
+    document = PlatDocument(location=test_file, ocr_output_path=ocr_output_path)
 
-    # Act
-    result = ocr_instance.image_path
+    # Test processing a PDF file
+    document.process_file()
+    assert isinstance(document.processor, PDFProcessor)
+    assert isinstance(document.ocr_text, list)
 
-    # Assert
-    assert result == Path("/test/directory/test_image.jpg")
-
-
-def test_plat_document():
-    # Arrange
-    plat_document = PlatDocument(location="plat/data/grand_mesa/GM 5 Lot 170.pdf", pages=[1, 2, 3])
-
-    # Act
-    file = plat_document.file
-    pages = plat_document.pages
-
-    # Assert
-    assert file == Path("plat/data/grand_mesa/GM 5 Lot 170.pdf")
-    assert pages == [1, 2, 3]
+    # Test processing a non-PDF file
+    document.location = Path("/path/to/test.txt")  # replace with path to a non-PDF test file
+    
+    document.process_file()

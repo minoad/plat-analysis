@@ -28,7 +28,10 @@ dependencies = [
   "pytest",
   "pytest-mock",
   "zope-interface",
-  "coverage"
+  "coverage",
+  "opencv-python",
+  "numpy",
+  "matplotlib"
 ]
 
 [project.optional-dependencies]
