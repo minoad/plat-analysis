@@ -4,16 +4,6 @@ FROM python:3.12
 # set the working directory in the container
 WORKDIR /workspaces/plat-analysis
 
-# copy the dependencies file to the working directory
-#COPY requirements.txt .
-
 RUN apt update
 RUN apt install -y tesseract-ocr libtesseract-dev libpoppler-cpp-dev poppler-utils ffmpeg libsm6 libxext6
 #RUN make build
-# RUN pip install -e .
-
-# copy the content of the local src directory to the working directory
-#COPY src/ .
-
-# command to run on container start
-#CMD [ "make", "build" ]
