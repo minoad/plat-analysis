@@ -24,7 +24,10 @@ dependencies = [
   "black",
   "mypy",
   "pylint",
-  "flake8"
+  "flake8",
+  "pytest",
+  "pytest-mock",
+  "zope-interface"
 ]
 
 [project.optional-dependencies]

@@ -17,7 +17,9 @@
 				"ms-python.flake8",
 				"donjayamanne.python-extension-pack",
 				"ms-python.mypy-type-checker",
-				"ms-vscode.makefile-tools"
+				"ms-vscode.makefile-tools",
+				"analytic-signal.preview-tiff",
+				"jebbs.plantuml"
 			]
 		}
 	}

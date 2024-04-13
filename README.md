@@ -1,5 +1,13 @@
 # Plat Analysis
 
+## TODO
+
+* TODO: Deal with these file names
+* TODO: Automate file type
+* TODO: Come back to this and figure out what is going on
+    * struct errors in ocr.py
+* TODO: Can i remove watermarks?
+
 ## Introduction
 
 Find the plats

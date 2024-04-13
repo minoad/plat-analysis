@@ -1,6 +1,7 @@
 old/
 *.pdf
-
+*.tiff
+plat/data/
 
 
 # Byte-compiled / optimized / DLL files

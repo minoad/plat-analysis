@@ -14,9 +14,13 @@ TESTFILE: list[str] = [
     "plat/data/bluffs/201100043.pdf",
 ]
 
-#PLAT_DIR: str = "plat/data/plats_notes_sharepoint"
+# TODO: In test_small ensure one type of all errors.
+# PLAT_DIR: str = "plat/data/plats_notes_sharepoint"
 # PLAT_DIR: str = "plat/data/bluffs"
-PLAT_DIR: str = "plat/data/grand_mesa"
+# PLAT_DIR: str = "plat/data/grand_mesa"
+# PLAT_DIR: str = "plat/data/HIGHLANDS/Highlands 3"
+# PLAT_DIR: str = "plat/data/CAP ROCK"
+PLAT_DIR: str = "plat/data/test_small"
 
 
 @click.command()
@@ -50,7 +54,7 @@ def main() -> int:
     #         for plat in plat_dir.iterdir():
     #             plat_files.append(plat)
     # plat_dir = [str(i) for i in plat_files]
-    plat_results = [PlatDocument(plat) for plat in plat_files]
+    plat_results: list[PlatDocument] = [PlatDocument(location=plat) for plat in plat_files]
     print(len(plat_results))
 
     return 0
