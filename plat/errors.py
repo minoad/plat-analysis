@@ -1,5 +1,5 @@
 class OCRError(Exception):
-    """ 
+    """
     Generic OCR Error
     raise with raise OCRError("Some error message", self.file_path) from e
     """
@@ -21,7 +21,7 @@ class PDFPageError(Exception):
 
 
 class PlatPageImageError(Exception):
-    """ Exception in case of no pages in PDF"""
+    """Exception in case of no pages in PDF"""
 
     def __init__(self, message, image_data_type, image_path):
         self.image_data_type = image_data_type

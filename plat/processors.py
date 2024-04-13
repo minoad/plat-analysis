@@ -25,7 +25,7 @@ It includes the following:
   - `ocr`: Perform OCR on an image.
   - `process`: Process a document and return the extracted text.
 
-- `PDFProcessor`: A class for processing PDF documents. 
+- `PDFProcessor`: A class for processing PDF documents.
     It implements the `DocumentProcessor` interface and provides the following methods:
   - `ocr`: Perform OCR on an image and return the extracted text.
   - `collect_pdf_images`: Extract images from a PDF page and perform OCR on each image.
@@ -34,6 +34,7 @@ It includes the following:
 
 This module is part of the plat project, which is used for processing plat documents.
 """
+
 import io
 import logging
 from pathlib import Path
@@ -43,6 +44,8 @@ import pytesseract
 from PIL import Image
 from pypdf import PageObject, PdfReader
 from pypdf._utils import ImageFile
+import struct
+from plat.errors import PDFPageError
 
 
 class DocumentProcessor(Protocol):
@@ -74,15 +77,30 @@ class PDFProcessor(DocumentProcessor):
         """
         Perform OCR on an image.
         """
-        image_data = Image.open(io.BytesIO(image.data))
+        image_data = Image.open(io.BytesIO(initial_bytes=image.data))
         return pytesseract.image_to_string(image_data)
 
     def collect_pdf_images(self, page: PageObject) -> str:
         """
         Get image from self.image_data.data
         """
+        ocr_text: list[str] = []
+        # ocr_text: list[str] = [self.ocr(image) for image in page.images]
+        try:
+            for image in page.images:
+                ocr_text.append(self.ocr(image))
+        except NotImplementedError as e:
+            error_message = f"Not implemented error on pages in pdf {self.path}: {e}"
+            custom_exception = PDFPageError(error_message, self.path)
+            self.logger.warning(custom_exception)
+            return ""
+        except struct.error as e:
+            error_message = f"Unable to extract page_image due to a struct error {self.path}: {e}"
+            custom_exception = PDFPageError(error_message, self.path)
+            self.logger.error(custom_exception)
+            return ""
 
-        return '\n'.join([self.ocr(image) for image in page.images])
+        return "\n".join(ocr_text)
 
     def collect_pdf_pages(self, pdf: PdfReader) -> list[str]:
         """
@@ -95,6 +113,8 @@ class PDFProcessor(DocumentProcessor):
         """
         Given the path to a pdf document, return a list of ocr'd text for each page.
         """
-        logger.info(f"Processing PDF: {path}")
+        self.path: Path = path
+        self.logger = logger
+        self.logger.info(f"Processing PDF: {path}")
 
         return self.collect_pdf_pages(PdfReader(stream=path))

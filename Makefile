@@ -1,3 +1,4 @@
+.PHONY: build
 build:
 	pip install -e .
 
@@ -7,10 +8,16 @@ typehint:
 
 .PHONY: test
 test:
-	pytest tests/
+	pytest test/
+
+.PHONY: test-coverage
+test-coverage:  ## Run tests with coverage
+	coverage erase
+	coverage run -m pytest
+	coverage report -m
 
 .PHONY: lint
-lint: lint_pylint lint_flake8
+lint: lint_pylint lint_flake8 black typehint
 
 .PHONY: lint_pylint
 lint_pylint:

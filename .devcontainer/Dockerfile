@@ -15,4 +15,4 @@ RUN apt install -y tesseract-ocr libtesseract-dev libpoppler-cpp-dev poppler-uti
 #COPY src/ .
 
 # command to run on container start
-#CMD [ "python", "./server.py" ]
+CMD [ "make", "build" ]

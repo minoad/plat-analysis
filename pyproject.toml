@@ -27,7 +27,8 @@ dependencies = [
   "flake8",
   "pytest",
   "pytest-mock",
-  "zope-interface"
+  "zope-interface",
+  "coverage"
 ]
 
 [project.optional-dependencies]

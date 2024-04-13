@@ -30,9 +30,10 @@ from pypdf import PdfReader
 from pypdf._utils import ImageFile
 
 from plat.errors import OCRError, PDFPageError, PlatFileTypeError, PlatPageImageError
+from plat.processors import PDFProcessor
 
 logger: logging.Logger = logging.getLogger(name=__name__)
-logging.basicConfig(filename='plat_text_extract.log', encoding='utf-8', level=logging.INFO)
+logging.basicConfig(filename="plat_text_extract.log", encoding="utf-8", level=logging.INFO)
 
 
 @dataclass()
@@ -40,6 +41,7 @@ class PlatPage:
     """
     Represents a single page of a plat document
     """
+
     file: Path
     page_num: int
     image_data: ImageFile
@@ -106,12 +108,12 @@ class PlatDocument:
         - ocr_output_path: Path to the file where the ocr text is stored
     """
 
-    location: str
+    location: Path
+    ocr_output_path: str
     pages: list[PlatPage] = field(default_factory=list)
 
     @property
     def plat_path(self) -> Path:
-        print('a')
         """
         Returns the inferred plat_path
         """
@@ -128,12 +130,12 @@ class PlatDocument:
         """
         return self.plat_path.parent / self.plat_path.stem
 
-    @property
-    def ocr_output_path(self) -> Path:
-        """
-       Returns the inferred ocr_output_path
-        """
-        return self.image_directory / f"{self.image_directory.stem}_ocr_text.txt"
+    # @property
+    # def ocr_output_file_path(self) -> Path:
+    #     """
+    #     Returns the inferred ocr_output_path
+    #     """
+    #     return self.image_directory / f"{self.image_directory.stem}_ocr_text.txt"
 
     def __post_init__(self) -> None:
         """
@@ -142,65 +144,30 @@ class PlatDocument:
         """
 
         self.process_file()
-        self.write_ocr_text()
+        # self.write_ocr_text()
         print("a")
 
     def write_ocr_text(self) -> None:
         """
         Write out the ocr'd text results
         """
-
-        if self.pages:
-            logger.info("writing ocr text for %s to %s", self.plat_path, self.ocr_output_path)
-            with open(self.ocr_output_path, mode="w", encoding="utf8") as fp:
-                fp.write('\n'.join(page.image_string for page in self.pages))
-        else:
-            logger.warning("No pages found in %s", self.plat_path)
-            # raise PDFPageError("No pages found", self.plat_path)
-            # custom_exception = PDFPageError(error_message, self.plat_path)
+        Path(self.ocr_output_path).mkdir(parents=True, exist_ok=True)
+        if self.ocr_text:
+            logger.info("writing ocr text for %s to %s", self.location, self.ocr_output_path)
+            with open(f"{Path(self.ocr_output_path)/self.location.stem}_ocr.txt", mode="w", encoding="utf8") as fp:
+                fp.write('\n'.join(self.ocr_text))
 
     def process_file(self) -> None:
         """
         process the file
         """
         if self.plat_path.suffix.lower() == ".pdf":
-            # self.document_parser: DocumentProcessor = PDFProcessor()
-            # self.document_parser.process(self.plat_path)
-            self.process_pdf()
+            self.processor = PDFProcessor()
+            self.ocr_text: list[str] = self.processor.process(path=self.location, logger=logger)
+            self.write_ocr_text()
         else:
             error_message: str = (
                 f"File type {self.plat_path.suffix.lower()} not implemented for plat analysis {self.plat_path}"
             )
             custom_exception = PlatFileTypeError(error_message, self.plat_path)
             logger.warning(custom_exception)
-
-    def process_pdf(self) -> None:
-        """
-        Process if file is of type pdf
-        """
-        # try:
-        # pdfstream when bad has page_layout and page_mode of none.
-        pdf_stream = PdfReader(stream=self.plat_path)
-        for i, page in enumerate(iterable=pdf_stream.pages):
-            try:
-                page_image: ImageFile = page.images[0]
-                self.pages.append(
-                    PlatPage(
-                        file=self.plat_path,
-                        page_num=i,
-                        image_data=page_image,
-                        image_directory=self.image_directory,
-                    )
-                )
-            except IndexError as e:
-                error_message = f"Index error on pages in pdf {self.plat_path}: {e}"
-                custom_exception = PDFPageError(error_message, self.plat_path)
-                logger.warning(custom_exception)
-            except NotImplementedError as e:
-                error_message = f"Not implemented error on pages in pdf {self.plat_path}: {e}"
-                custom_exception = PDFPageError(error_message, self.plat_path)
-                logger.warning(custom_exception)
-            except struct.error as e:
-                error_message = f"Unable to extract page_image due to a struct error {self.plat_path}: {e}"
-                custom_exception = PDFPageError(error_message, self.plat_path)
-                logger.error(custom_exception)
