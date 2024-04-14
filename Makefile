@@ -6,7 +6,7 @@ build:
 docker_clean:
 	docker image prune --all -f
 	docker container prune -f
-	docker-compose down --rmi all --volumes --remove-orphans
+	cd .devcontainer && docker-compose down --rmi all --volumes --remove-orphans
 
 .PHONY: mypy
 mypy:
