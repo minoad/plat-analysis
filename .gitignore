@@ -1,6 +1,9 @@
 old/
 plat/data/plat_source_documents/
-
+Screenshots/
+secure.py
+all_plat_docs/
+documentanalysis/data/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

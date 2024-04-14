@@ -3,12 +3,12 @@ requires = ["setuptools >= 61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "plat-analysis"
+name = "documentanalysis"
 version = "0.1.0"
-description = "Lovely Spam! Wonderful Spam!"
+description = "Given a file, do all you can to extract text and then store it."
 requires-python = ">=3.12"
 license = { file = "LICENSE.txt" }
-keywords = ["plat", "template", "devcontainer"]
+keywords = ["plat", "ocr", "template", "devcontainer"]
 authors = [{ name = "Micah Norman", email = "minoad@gmail.com" }]
 maintainers = [{ name = "Micah Norman", email = "minoad@gmail.com" }]
 dependencies = [
@@ -31,7 +31,8 @@ dependencies = [
   "coverage",
   "opencv-python",
   "numpy",
-  "matplotlib"
+  "matplotlib",
+  "pymongo"
 ]
 
 [project.optional-dependencies]
@@ -70,9 +71,6 @@ profile = "black"
 line-length = 120
 target-version = ['py312']
 include = '\.pyi?$'
-# We use preview style for formatting Black itself. If you
-# want stable formatting across releases, you should keep
-# this off.
 preview = true
 
 [tool.pylint.format]

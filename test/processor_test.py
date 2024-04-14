@@ -18,7 +18,7 @@ from pathlib import Path
 
 import pytest  # type: ignore
 
-from plat.processors import PDFProcessor
+from documentanalysis.processors import PDFProcessor
 
 TEST_FILES = ["plat/data/test_small/201100030.pdf"]
 
@@ -30,14 +30,12 @@ def test_pdf_processor():
     """
     Test the PDFProcessor class.
     """
-    # Create an instance of PDFProcessor
-    processor = PDFProcessor()
 
     # Path to a test PDF file
     test_pdf_path = Path(TEST_FILES[0])
 
     # Process the test PDF file
-    result = processor.process(test_pdf_path, logger)
+    result = PDFProcessor(test_pdf_path, logger).process()
 
     # Check if the result is a list
     assert isinstance(result, list)
