@@ -14,22 +14,22 @@ BLUE: list[int] = [255, 0, 0]
 #     """
 #     Given the path to an image, extract only the specified color.
 #     """
-    
 
-def load_image(path: Path|str) -> ndarray:
+
+def load_image(path: Path | str) -> ndarray:
     if isinstance(path, str):
         path = Path(path)
     if not path.exists():
         raise FileNotFoundError(f"File not found: {path}")
-    img = cv.imread(str(path))
+    return cv.imread(str(path))
+
 
 def main() -> int:
     img1 = load_image(IMAGE_FILES[2])
-    
-    
+
     cv.imshow('img', img1)
     cv.waitKey(15)
-    b, g, r = cv.split(img1)
+    #b, g, r = cv.split(img1)
     replicate = cv.copyMakeBorder(img1, 10, 10, 10, 10, cv.BORDER_REPLICATE)
     reflect = cv.copyMakeBorder(img1, 10, 10, 10, 10, cv.BORDER_REFLECT)
     reflect101 = cv.copyMakeBorder(img1, 10, 10, 10, 10, cv.BORDER_REFLECT_101)
