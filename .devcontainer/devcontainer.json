@@ -2,10 +2,6 @@
 	"dockerComposeFile": "docker-compose.yml",
     "service": "devcontainer",
     "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
-	//"build": {
-		
-		// "dockerfile": "Dockerfile"
-	//},
 	"customizations": {
 		"vscode": {
 			"extensions": [
@@ -28,8 +24,5 @@
 			]
 		}
 	},
-	"postCreateCommand": "make build",
-	// "forwardPorts": [
-	// 	3000
-	// ]
+	"postCreateCommand": "make build"
 }
