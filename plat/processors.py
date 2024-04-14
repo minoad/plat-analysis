@@ -39,7 +39,7 @@ import io
 import logging
 import struct
 from pathlib import Path
-from typing import Protocol
+from typing import Protocol, Any
 
 import pytesseract  # pylint: disable=import-error
 from PIL import Image  # pylint: disable=import-error
@@ -55,15 +55,47 @@ class DocumentProcessor(Protocol):
     TODO: Should this be a path or a string?
     """
 
-    def ocr(self, image: ImageFile) -> str:
+    def __init__(self, path: Path, logger: logging.Logger) -> None:
+        """
+        Initialize the processor with the given path and logger.
+        """
+
+    def ocr(self, image: Any) -> str: # ImageFile
         """
         Perform OCR on an image.
         """
 
-    def process(self, path: Path, logger: logging.Logger) -> list[str]:
+    def process(self) -> list[str]:
         """
         Process a document and return the extracted text.
         """
+
+
+class PNGProcessor(DocumentProcessor):
+    """
+    Interface for a document processor.
+    TODO: Should this be a path or a string?
+    """
+
+    def __init__(self, path: Path, logger: logging.Logger) -> None:
+        """
+        Initialize the processor with the given path and logger.
+        """
+        self.path: Path = path
+        self.logger = logger
+        self.logger.info(f"Processing PDF: {path}")
+
+    def ocr(self, image: Any) -> str:
+        """
+        Perform OCR on an image.
+        """
+        return pytesseract.image_to_string(image)
+
+    def process(self) -> list[str]:
+        """
+        Process a document and return the extracted text.
+        """
+        return [self.ocr(Image.open(str(self.path)))]
 
 
 class PDFProcessor(DocumentProcessor):
@@ -73,6 +105,11 @@ class PDFProcessor(DocumentProcessor):
     Accepts a path to a pdf document.
     Returns a list of strings, one for each page.
     """
+
+    def __init__(self, path: Path, logger: logging.Logger) -> None:
+        self.path: Path = path
+        self.logger = logger
+        self.logger.info(f"Processing PDF: {path}")
 
     def ocr(self, image: ImageFile) -> str:
         """
@@ -109,12 +146,12 @@ class PDFProcessor(DocumentProcessor):
         """
         return [self.collect_pdf_images(i) for i in pdf.pages]
 
-    def process(self, path: Path, logger: logging.Logger) -> list[str]:
+    def process(self) -> list[str]:
         """
-        Given the path to a pdf document, return a list of ocr'd text for each page.
+        PDFProcessor process method
+        1. Collects pages from the pdf document.
+        1. Collects images from each page.
+        1. OCR's the images.
+        1. Returns the OCR'd text for each page.
         """
-        self.path: Path = path
-        self.logger = logger
-        self.logger.info(f"Processing PDF: {path}")
-
-        return self.collect_pdf_pages(PdfReader(stream=path))
+        return self.collect_pdf_pages(PdfReader(stream=self.path))

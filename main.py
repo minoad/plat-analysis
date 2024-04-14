@@ -3,6 +3,7 @@ Scans plat documents and stores the resulting data
 """
 
 import pathlib
+import logging
 
 import click
 
@@ -23,7 +24,10 @@ PLAT_DIR: str = "plat/data/GRAND MESA"
 # PLAT_DIR: str = "plat/data/HIGHLANDS/Highlands 3"
 # PLAT_DIR: str = "plat/data/CAP ROCK"
 # PLAT_DIR: str = "plat/data/test_small"
+PLAT_DIR: str = "plat/data/image_analysis"
 
+logger: logging.Logger = logging.getLogger(name=__name__)
+logging.basicConfig(filename="plat_text_extract.log", encoding="utf-8", level=logging.INFO)
 
 @click.command()
 @click.option("--count", default=1, help="Number of greetings.")
@@ -53,7 +57,7 @@ def main() -> int:
         if plat_dir.is_file():
             plat_files.append(plat_dir)
     plat_results: list[PlatDocument] = [
-        PlatDocument(location=plat, ocr_output_path=OCR_OUTPUT_PATH) for plat in plat_files
+        PlatDocument(location=plat, ocr_output_path=OCR_OUTPUT_PATH, logger=logger) for plat in plat_files
     ]
     print(len(plat_results))
 

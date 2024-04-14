@@ -24,10 +24,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from plat.errors import PlatFileTypeError
-from plat.processors import PDFProcessor
-
-logger: logging.Logger = logging.getLogger(name=__name__)
-logging.basicConfig(filename="plat_text_extract.log", encoding="utf-8", level=logging.INFO)
+from plat.processors import PDFProcessor, PNGProcessor
 
 
 @dataclass()
@@ -48,6 +45,7 @@ class PlatDocument:
 
     location: Path
     ocr_output_path: str
+    logger: logging.Logger
 
     def __post_init__(self) -> None:
         """
@@ -63,7 +61,7 @@ class PlatDocument:
         """
         Path(self.ocr_output_path).mkdir(parents=True, exist_ok=True)
         if self.ocr_text and len("\n".join(self.ocr_text)) > 0:
-            logger.info("writing ocr text for %s to %s", self.location, self.ocr_output_path)
+            self.logger.info("writing %s", f"{Path(self.ocr_output_path)/self.location.stem}_ocr.txt")
             with open(f"{Path(self.ocr_output_path)/self.location.stem}_ocr.txt", mode="w", encoding="utf8") as fp:
                 fp.write("\n".join(self.ocr_text))
 
@@ -72,12 +70,18 @@ class PlatDocument:
         process the file
         """
         if self.location.suffix.lower() == ".pdf":
-            self.processor = PDFProcessor()
-            self.ocr_text: list[str] = self.processor.process(path=self.location, logger=logger)
+            self.processor = PDFProcessor(path=self.location, logger=self.logger)
+            self.ocr_text: list[str] = self.processor.process()
             self.write_ocr_text()
-        else:
-            error_message: str = (
-                f"File type {self.location.suffix.lower()} not implemented for plat analysis {self.location}"
-            )
-            custom_exception = PlatFileTypeError(error_message, self.location)
-            logger.warning(custom_exception)
+            return
+        if self.location.suffix.lower() == ".png":
+            self.processor = PNGProcessor(path=self.location, logger=self.logger)
+            self.ocr_text: list[str] = self.processor.process()
+            self.write_ocr_text()
+            return
+
+        error_message: str = (
+            f"File type {self.location.suffix.lower()} not implemented for plat analysis {self.location}"
+        )
+        custom_exception = PlatFileTypeError(error_message, self.location)
+        self.logger.warning(custom_exception)
