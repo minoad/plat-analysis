@@ -21,15 +21,26 @@ TESTFILE: list[str] = [
 OCR_OUTPUT_PATH: str = "documentanalysis/data/ocr_output/"
 
 # TODO: In test_small ensure one type of all errors.
-# PLAT_DIR: str = "src/data/srcs_notes_sharepoint"
+# PLAT_DIR: str = "documentanalysis/data/srcs_notes_sharepoint"
 # PLAT_DIR: str = "documentanalysis/data/test_small"
 # PLAT_DIR: str = "documentanalysis/data/GRAND MESA"
-# PLAT_DIR: str = "test/all_plat_docs/"
-# PLAT_DIR: str = "src/data/HIGHLANDS/Highlands 3"
-# PLAT_DIR: str = "src/data/CAP ROCK"
-# PLAT_DIR: str = "src/data/test_small"
-# PLAT_DIR: str = "src/data/image_analysis"
-PLAT_DIR: str = "documentanalysis/data/Screenshots"
+# PLAT_DIR: str = "documentanalysis/all_plat_docs/"
+# PLAT_DIR: str = "documentanalysis/data/HIGHLANDS/Highlands 3"
+# PLAT_DIR: str = "documentanalysis/data/CAP ROCK"
+# PLAT_DIR: str = "documentanalysis/data/test_small"
+# PLAT_DIR: str = "documentanalysis/data/image_analysis"
+# PLAT_DIR: str = "documentanalysis/data/ccrs"
+
+dirs: dict[str, str] = {
+    'plate_all_sharepoint': "documentanalysis/data/srcs_notes_sharepoint",
+    'plat_test': "documentanalysis/data/test_small",
+    'plat_grand_mesa': "documentanalysis/data/GRAND MESA",
+    'plat_highlands_3': "documentanalysis/data/HIGHLANDS/Highlands 3",
+    'plat_cap_rock': "documentanalysis/data/CAP ROCK",
+    'generic_image_analysis': "documentanalysis/data/image_analysis",
+    'ccrs_all': "documentanalysis/data/ccrs",
+    'plat_test_all': "test/all_plat_docs",
+}
 
 logger: logging.Logger = logging.getLogger(name=__name__)
 logging.basicConfig(
@@ -58,7 +69,7 @@ def main() -> int:
     Returns:
         int: The exit code of the program.
     """
-    plat_base_directory = pathlib.Path(PLAT_DIR)
+    plat_base_directory = pathlib.Path(dirs['plat_test_all'])
     plat_files = []
     # TODO: Add file or folder detection
 
@@ -76,7 +87,7 @@ def main() -> int:
                 ),
                 MongoWriter(
                     auth=MONGODB_AUTHENTICATION,
-                    path={'host': 'mongodb://mongo:27017/', 'dbname': 'screenshots', 'collection': 'research_with_friends'}
+                    path={'host': 'mongodb://mongo:27017/', 'dbname': 'hoa_docs', 'collection': 'ccrs'}
                 ),
             ]
         ) for plat in plat_files

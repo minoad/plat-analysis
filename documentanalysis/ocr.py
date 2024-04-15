@@ -22,11 +22,11 @@ including extracted text.
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any
 
 from documentanalysis.errors import FileTypeError
 from documentanalysis.processors import DocumentProcessor, PDFProcessor, PNGProcessor
-from documentanalysis.secure import MONGODB_AUTHENTICATION
-from documentanalysis.store import MongoWriter, StoreWriter
+from documentanalysis.store import  StoreWriter
 
 
 @dataclass()
@@ -60,24 +60,23 @@ class Document:
         Construct path
         Dispatch file processing
         """
-
         self.process_file()
 
     def write_ocr_text(self, ocr_text) -> None:
         """
         Write out the ocr'd text results
         """
-        # Path(self.ocr_output_path).mkdir(parents=True, exist_ok=True)
-        # if ocr_text and len("\n".join(ocr_text)) > 0:
-        #     self.logger.info("writing %s", f"{Path(self.ocr_output_path)/self.location.stem}_ocr.txt")
-        #     with open(f"{Path(self.ocr_output_path)/self.location.stem}_ocr.txt", mode="w", encoding="utf8") as fp:
-        #         fp.write("\n".join(ocr_text))
-
         if ocr_text and len("\n".join(ocr_text)) > 0:
             for writer in self.writers:
-                #ocr_text = "\n".join(ocr_text)
-                
                 writer.save({"file": str(self.location), "text": "\n".join(ocr_text)}, logger=self.logger)
+                
+    def write_metadata_text(self, metadata: dict[str, Any]) -> None:
+        """
+        Write out the ocr'd text results
+        """
+        if metadata:
+            for writer in self.writers:
+                writer.save(metadata, logger=self.logger)
 
     def process_file(self) -> None:
         """
@@ -85,11 +84,15 @@ class Document:
         """
         if self.location.suffix.lower() == ".pdf":
             self.processor = PDFProcessor(path=self.location, logger=self.logger)
-            self.write_ocr_text(self.processor.process())
+            # self.write_ocr_text(self.processor.process())
+            self.processor.process()
+            self.write_metadata_text(self.processor.metadata)
             return
         if self.location.suffix.lower() == ".png":
             self.processor = PNGProcessor(path=self.location, logger=self.logger)
-            self.write_ocr_text(self.processor.process())
+            #self.write_ocr_text(self.processor.process())
+            self.processor.process()
+            self.write_metadata_text(self.processor.metadata)
             return
         error_message: str = (
             f"File type {self.location.suffix.lower()} not implemented for plat analysis {self.location}"

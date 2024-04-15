@@ -87,9 +87,12 @@ class PNGProcessor(DocumentProcessor):
 class PDFProcessor(DocumentProcessor):
     """
     Processor for PDF documents.
-    PDF Documents store pages and within pages they store images.
-    Accepts a path to a pdf document.
-    Returns a list of strings, one for each page.
+    Get the pdf metadata for the document.
+    Go through each page
+        go through each image in page
+            dict: image_name: text, for each image, extract text
+
+
     """
 
     def __init__(self, path: Path, logger: logging.Logger) -> None:
@@ -98,39 +101,51 @@ class PDFProcessor(DocumentProcessor):
         self.logger.info(f"Processing PDF: {path}")
         self.metadata = {}
 
-    def ocr(self, image: ImageFile) -> str:
+    def ocr(self, image: ImageFile) -> dict[str, str]:
         """
         Perform OCR on an image.
+        Save the text to the medatadata.
         """
         image_data = Image.open(io.BytesIO(initial_bytes=image.data))
-        return pytesseract.image_to_string(image_data)
+        image_text = pytesseract.image_to_string(image_data)
+        # self.metadata[image.name] = {'format': image.image.format, 'text': image_text}
+        # return pytesseract.image_to_string(image_data)
 
-    def collect_pdf_images(self, page: PageObject) -> str:
+        # Return the image data
+        return {'format': image.image.format, 'text': image_text}
+
+    def collect_pdf_images(self, page: PageObject) -> list[dict[str, Any]]:
         """
         Get image from self.image_data.data
         """
-        ocr_text: list[str] = []
+        image_data: list[str] = []
         try:
             for image in page.images:
-                self.metadata[image.name] = {'format': image.image.format_description}
-                ocr_text.append(self.ocr(image))
+                # self.metadata[image.name] = {'format': image.image.format_description}
+                image_data.append(self.ocr(image))
         except NotImplementedError as e:
             error_message = f"Not implemented error on pages in pdf {self.path}: {e}"
             custom_exception = PDFPageError(error_message, self.path)
             self.logger.warning(custom_exception)
-            return ""
+            image_data.append(error_message)
         except UnidentifiedImageError as e:
             error_message = f"UnidentifiedImageError error on pages in pdf {self.path}: {e}"
             custom_exception = PDFPageError(error_message, self.path)
             self.logger.warning(custom_exception)
-            return ""
+            image_data.append(error_message)
         except struct.error as e:
             error_message = f"Unable to extract page_image due to a struct error {self.path}: {e}"
             custom_exception = PDFPageError(error_message, self.path)
             self.logger.error(custom_exception)
-            return ""
+            image_data.append(error_message)
+        # collect all of the imagedata into metadtata for the page.
 
-        return "\n".join(ocr_text)
+        # TODO: This should be implemented as a list of dicts.
+        # Add to the dict.  Things like character count.
+        # maybe even some quick text analysis here.  percent of valid words, things like that
+        # maybe include the error that was thrown.
+
+        return image_data
 
     def collect_pdf_pages(self, pdf: PdfReader) -> list[str]:
         """
@@ -138,16 +153,32 @@ class PDFProcessor(DocumentProcessor):
 
         """
         print(self.metadata)
-        return [self.collect_pdf_images(i) for i in pdf.pages]
+        page_data = []
+        for page in pdf.pages:
+            # TODO: This is returning empty lists in some cases, deal with it here.
+            # should record something.
+            page_data.append(self.collect_pdf_images(page))
 
-    def process(self) -> list[str]:
+        self.metadata['pdf_pages'] = page_data
+        return self.metadata['pdf_pages']
+
+    def process(self) -> dict[str, Any]:
         """
         PDFProcessor process method
         1. Collects pages from the pdf document.
         1. Collects images from each page.
         1. OCR's the images.
         1. Returns the OCR'd text for each page.
+        
+        ## TODO!!! Get the text extract going here
+        ## look at textacy
+        ## Text classifier using nlp
+
+        # TODO: How do i know if this is a searchable doc?
         """
-        results = self.collect_pdf_pages(PdfReader(stream=self.path))
-        print(self.metadata)
-        return results
+        pdf_file = PdfReader(stream=self.path)
+        self.metadata['path'] = str(self.path)
+        self.metadata['pdf_file_metadata'] = pdf_file.metadata
+        self.collect_pdf_pages(pdf_file)
+
+        return self.metadata

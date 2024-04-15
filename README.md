@@ -2,6 +2,8 @@
 
 ## TODO
 
+1. - [ ] For searchable pdfs, extract the text and store it in the database.
+1. - [ ] Document should take all potential file types and match rather than testing internally.
 1. - [ ] In the pdfprocessor object, collect metadata about the file and merge it into the writer object.
 1. - [ ] [Text analysis with mongodb](https://mikeharmonphd.medium.com/sentiment-analysis-part-2-4338c02315c3)
 1. - [ ] Add sqlwriter
