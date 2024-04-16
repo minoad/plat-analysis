@@ -22,9 +22,11 @@ This module is part of the plat project, which is used for processing plat docum
 import io
 import logging
 import struct
+from abc import abstractmethod
 from pathlib import Path
-from typing import Any, Protocol
+from typing import Any, Protocol, runtime_checkable
 
+import fitz
 import pytesseract  # pylint: disable=import-error
 from PIL import Image, UnidentifiedImageError  # pylint: disable=import-error
 from pypdf import PageObject, PdfReader  # pylint: disable=import-error
@@ -32,24 +34,32 @@ from pypdf._utils import ImageFile  # pylint: disable=import-error
 
 from documentanalysis.errors import PDFPageError
 
+# import tika
+# tika.initVM()
+# from tika import parser
 
+
+@runtime_checkable
 class DocumentProcessor(Protocol):
     """
     Interface for a document processor.
     TODO: Should this be a path or a string?
     """
 
+    @abstractmethod
     def __init__(self, path: Path, logger: logging.Logger) -> None:
         """
         Initialize the processor with the given path and logger.
         """
 
+    @abstractmethod
     def ocr(self, image: Any) -> str:  # ImageFile
         """
         Perform OCR on an image.
         """
         return ""
 
+    @abstractmethod
     def process(self) -> list[str]:
         """
         Process a document and return the extracted text.
@@ -105,14 +115,22 @@ class PDFProcessor(DocumentProcessor):
         """
         Perform OCR on an image.
         Save the text to the medatadata.
+        # image_data pypdf is having issues with the new ccrs.  fitz may be the solution.
         """
         image_data = Image.open(io.BytesIO(initial_bytes=image.data))
+        # searchable_text: str = parser.from_file(str(self.path))
+        doc = fitz.open(self.path)
+        self.metadata["pdf_metadata"] = doc.metadata
+        # for page in doc:
+        #     text = page.get_text().encode("utf8")
+        text_data = [page.get_text().encode('utf-8') for page in doc]
+        self.metadata["searchable_text"] = '\n'.join()
         image_text = pytesseract.image_to_string(image_data)
         # self.metadata[image.name] = {'format': image.image.format, 'text': image_text}
         # return pytesseract.image_to_string(image_data)
 
         # Return the image data
-        return {'format': image.image.format, 'text': image_text}
+        return {"format": image.image.format, "text": image_text}
 
     def collect_pdf_images(self, page: PageObject) -> list[dict[str, Any]]:
         """
@@ -159,8 +177,8 @@ class PDFProcessor(DocumentProcessor):
             # should record something.
             page_data.append(self.collect_pdf_images(page))
 
-        self.metadata['pdf_pages'] = page_data
-        return self.metadata['pdf_pages']
+        self.metadata["pdf_pages"] = page_data
+        return self.metadata["pdf_pages"]
 
     def process(self) -> dict[str, Any]:
         """
@@ -169,7 +187,7 @@ class PDFProcessor(DocumentProcessor):
         1. Collects images from each page.
         1. OCR's the images.
         1. Returns the OCR'd text for each page.
-        
+
         ## TODO!!! Get the text extract going here
         ## look at textacy
         ## Text classifier using nlp
@@ -177,8 +195,8 @@ class PDFProcessor(DocumentProcessor):
         # TODO: How do i know if this is a searchable doc?
         """
         pdf_file = PdfReader(stream=self.path)
-        self.metadata['path'] = str(self.path)
-        self.metadata['pdf_file_metadata'] = pdf_file.metadata
+        self.metadata["path"] = str(self.path)
+        self.metadata["pdf_file_metadata"] = pdf_file.metadata
         self.collect_pdf_pages(pdf_file)
 
         return self.metadata

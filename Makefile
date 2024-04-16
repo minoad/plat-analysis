@@ -11,7 +11,7 @@ docker_clean:
 
 .PHONY: mypy
 mypy:
-	mypy --ignore-missing-imports plat/
+	mypy --ignore-missing-imports documentanalysis/
 
 .PHONY: test
 test:
@@ -28,7 +28,7 @@ lint: pylint flake8 black mypy
 
 .PHONY: pylint
 pylint:
-	pylint --max-line-length=120 plat/
+	pylint --max-line-length=120 documentanalysis/
 
 .PHONY: flake8
 flake8:
@@ -39,7 +39,7 @@ checklist: lint typehint test
 
 .PHONY: black
 black:
-	black -l 120 .
+	black --preview -l 120 .
 
 .PHONY: clean
 clean:

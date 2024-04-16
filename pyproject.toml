@@ -32,7 +32,9 @@ dependencies = [
   "opencv-python",
   "numpy",
   "matplotlib",
-  "pymongo"
+  "pymongo",
+  "pytest-dotenv",
+  "pymupdf"
 ]
 
 [project.optional-dependencies]

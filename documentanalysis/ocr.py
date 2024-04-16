@@ -26,7 +26,7 @@ from typing import Any
 
 from documentanalysis.errors import FileTypeError
 from documentanalysis.processors import DocumentProcessor, PDFProcessor, PNGProcessor
-from documentanalysis.store import  StoreWriter
+from documentanalysis.store import StoreWriter
 
 
 @dataclass()
@@ -69,7 +69,7 @@ class Document:
         if ocr_text and len("\n".join(ocr_text)) > 0:
             for writer in self.writers:
                 writer.save({"file": str(self.location), "text": "\n".join(ocr_text)}, logger=self.logger)
-                
+
     def write_metadata_text(self, metadata: dict[str, Any]) -> None:
         """
         Write out the ocr'd text results
@@ -90,9 +90,10 @@ class Document:
             return
         if self.location.suffix.lower() == ".png":
             self.processor = PNGProcessor(path=self.location, logger=self.logger)
-            #self.write_ocr_text(self.processor.process())
+            # self.write_ocr_text(self.processor.process())
             self.processor.process()
-            self.write_metadata_text(self.processor.metadata)
+            self.write_ocr_text(self.processor.process())
+            # self.write_metadata_text(self.processor.metadata)
             return
         error_message: str = (
             f"File type {self.location.suffix.lower()} not implemented for plat analysis {self.location}"

@@ -20,7 +20,8 @@
 				"ms-vscode.makefile-tools",
 				"analytic-signal.preview-tiff",
 				"jebbs.plantuml",
-				"ms-vscode.makefile-tools"
+				"ms-vscode.makefile-tools",
+				"davidanson.vscode-markdownlint"
 			]
 		}
 	},

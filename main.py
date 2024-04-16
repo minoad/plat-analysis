@@ -32,20 +32,23 @@ OCR_OUTPUT_PATH: str = "documentanalysis/data/ocr_output/"
 # PLAT_DIR: str = "documentanalysis/data/ccrs"
 
 dirs: dict[str, str] = {
-    'plate_all_sharepoint': "documentanalysis/data/srcs_notes_sharepoint",
-    'plat_test': "documentanalysis/data/test_small",
-    'plat_grand_mesa': "documentanalysis/data/GRAND MESA",
-    'plat_highlands_3': "documentanalysis/data/HIGHLANDS/Highlands 3",
-    'plat_cap_rock': "documentanalysis/data/CAP ROCK",
-    'generic_image_analysis': "documentanalysis/data/image_analysis",
-    'ccrs_all': "documentanalysis/data/ccrs",
-    'plat_test_all': "test/all_plat_docs",
+    "plate_all_sharepoint": "documentanalysis/data/srcs_notes_sharepoint",
+    "plat_test": "documentanalysis/data/test_small",
+    "plat_grand_mesa": "documentanalysis/data/GRAND MESA",
+    "plat_highlands_3": "documentanalysis/data/HIGHLANDS/Highlands 3",
+    "plat_cap_rock": "documentanalysis/data/CAP ROCK",
+    "generic_image_analysis": "documentanalysis/data/image_analysis",
+    "ccrs_all": "documentanalysis/data/ccrs",
+    "plat_test_all": "test/all_plat_docs",
 }
 
 logger: logging.Logger = logging.getLogger(name=__name__)
 logging.basicConfig(
-    filename="plat_text_extract.log", encoding="utf-8", level=logging.INFO,
-    format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%Y-%m-%d %H:%M:%S'
+    filename="plat_text_extract.log",
+    encoding="utf-8",
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)-8s %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
 )
 
 
@@ -69,7 +72,7 @@ def main() -> int:
     Returns:
         int: The exit code of the program.
     """
-    plat_base_directory = pathlib.Path(dirs['plat_test_all'])
+    plat_base_directory = pathlib.Path(dirs["ccrs_all"])
     plat_files = []
     # TODO: Add file or folder detection
 
@@ -83,14 +86,15 @@ def main() -> int:
             writers=[
                 FileWriter(
                     auth={},
-                    path={'uri': str(Path(OCR_OUTPUT_PATH) / f"{plat.stem}.txt)").replace(' ', '')},
+                    path={"uri": str(Path(OCR_OUTPUT_PATH) / f"{plat.stem}.txt)").replace(" ", "")},
                 ),
                 MongoWriter(
                     auth=MONGODB_AUTHENTICATION,
-                    path={'host': 'mongodb://mongo:27017/', 'dbname': 'hoa_docs', 'collection': 'ccrs'}
+                    path={"host": "mongodb://mongo:27017/", "dbname": "hoa_docs", "collection": "ccrs"},
                 ),
-            ]
-        ) for plat in plat_files
+            ],
+        )
+        for plat in plat_files
     ]
     print(len(plat_results))
 

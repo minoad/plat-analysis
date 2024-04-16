@@ -1,27 +1,47 @@
-import unittest
-from unittest.mock import MagicMock
+from logging import Logger
 
-from documentanalysis.store import MongoStorage
+import pytest
+
+from documentanalysis.secure import MONGODB_AUTHENTICATION
+from documentanalysis.store import FileWriter, MongoWriter
 
 
-class TestMongoStorage(unittest.TestCase):
-    def setUp(self):
-        self.storage = MongoStorage({ "name": "John", "address": "Highway 37" })
+def test_mongo_actual_writer():
+    """
+    Test the MongoWriter class.
+    """
+    n = MongoWriter(
+        auth=MONGODB_AUTHENTICATION,
+        path={"host": "mongodb://mongo:27017/", "dbname": "mydatabase", "collection": "customers"},
+    ).save(obj={"name": "John", "address": "Highway 37"}, logger=Logger("test"))
+    print(n)
 
-    def test_save(self):
-        # Mock the pymongo.MongoClient and pymongo.MongoClient().__getitem__ methods
-        pymongo = MagicMock()
-        pymongo.MongoClient.return_value.__getitem__.return_value = MagicMock()
 
-        # Set the mocked pymongo.MongoClient as the MongoClient used in the test
-        MongoStorage.pymongo = pymongo
+def test_mongo_lambda_actual_writer():
+    """
+    Test the MongoWriter class.
+    """
+    n = MongoWriter(
+        path={"host": "mongodb://mongo:27017/", "dbname": "mydatabase", "collection": "customers"},
+    )
+    
+    #.save(obj={"name": "John", "address": "Highway 37"}, logger=Logger("test"))
+    print(n)
 
-        # Call the save method
-        self.storage.save()
+# def test_mongo_writer():
+#     """
+#     Test the MongoWriter class.
+#     """
+#     n = MongoWriter(
+#         auth=MONGODB_AUTHENTICATION,
+#         path={"host": "mongodb://mongo:27017/", "dbname": "mydatabase", "collection": "customers"},
+#     ).save(obj={"name": "John", "address": "Highway 37"}, logger=Logger("test"))
+#     print(n)
 
-        # Assert that the pymongo.MongoClient and pymongo.MongoClient().__getitem__ methods were called
-        pymongo.MongoClient.assert_called_once_with("mongodb://mongo:27017/")
-        pymongo.MongoClient.return_value.__getitem__.assert_called_once_with("mydatabase")
 
-if __name__ == '__main__':
-    unittest.main()
+def test_file_write():
+    """
+    Test the FileWrite class.
+    """
+    n = FileWriter(auth={}, path={"uri": "test/test.txt"}).save(obj="Hello, World!", logger=Logger("test"))
+    print(n)

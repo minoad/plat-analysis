@@ -1,14 +1,17 @@
 import logging
 from pathlib import Path
 
-import pytest # noqa: F401 # pylint: disable=unused-import # type: ignore 
+import pytest  # noqa: F401 # pylint: disable=unused-import # type: ignore
 
 from documentanalysis.ocr import Document, PDFProcessor
 
 logger: logging.Logger = logging.getLogger(name=__name__)
 logging.basicConfig(
-    filename="plat_text_extract.log", encoding="utf-8", level=logging.INFO,
-    format='%(asctime)s %(levelname)-8s %(message)s', datefmt='%Y-%m-%d %H:%M:%S'
+    filename="plat_text_extract.log",
+    encoding="utf-8",
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)-8s %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
 )
 
 TEST_FILES = ["plat/data/test_small/201100030.pdf"]
@@ -18,7 +21,7 @@ def test_process_file() -> None:
     """
     Test the process_file method of the Document class.
 
-    This function tests the processing of a file using the process_file method of the Document class.  It asserts that 
+    This function tests the processing of a file using the process_file method of the Document class.  It asserts that
     the processor attribute of the Document object is an instance of PDFProcessor after processing a PDF file,
     and that the ocr_text attribute is a list after processing any file.
 

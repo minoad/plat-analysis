@@ -4,6 +4,7 @@ Screenshots/
 secure.py
 all_plat_docs/
 documentanalysis/data/
+*.env
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

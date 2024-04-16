@@ -1,7 +1,18 @@
 # Plat Analysis
 
+## Summary
+
+Initially conceived as a straightforward processor for homeowners association restriction documents, this project aimed to extract and store pertinent information. However, it has since evolved to accommodate a diverse range of document types and supports storage across multiple database systems.
+
+In recent months, the project has further expanded due to an influx of historical newspaper clippings and other document images. This has necessitated the incorporation of more sophisticated image extraction techniques. Additionally, the project now includes the development of a text classifier, sentiment analysis, and various other text analysis tools.
+
+
+
+
 ## TODO
 
+1. - [ ] Find a way to avoid installing java by getting rid of tika.
+1. - [ ] Add textract for additional metadata information.
 1. - [ ] For searchable pdfs, extract the text and store it in the database.
 1. - [ ] Document should take all potential file types and match rather than testing internally.
 1. - [ ] In the pdfprocessor object, collect metadata about the file and merge it into the writer object.
@@ -34,15 +45,7 @@
     "18470a4f9382"
 ]
 ```
-## Introduction
 
-Find the plats
-
-Given a set of pdf's of plats
-    1. Remove watermark
-    1. OCR document
-    1. Store text data
-    1. Analyse text data
 
 ## Setup
 
